@@ -1,0 +1,3 @@
+[1020/172831.672:ERROR:broker_win.cc(137)] Error sending sync broker message: The pipe is being closed. (0xE8)
+[1020/192146.984:ERROR:broker_win.cc(137)] Error sending sync broker message: The pipe is being closed. (0xE8)
+[1020/192353.279:ERROR:broker_win.cc(137)] Error sending sync broker message: The pipe is being closed. (0xE8)
