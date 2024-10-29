@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 fps = 40
 
 def getState(frames = 4):
+    # ls = numpy.array([])
     ls = []
 
     with mss.mss() as sct:
@@ -22,8 +23,10 @@ def getState(frames = 4):
 
             # Get raw pixels from the screen, save it to a Numpy array
             img = numpy.array(sct.grab(monitor))    # shape (600, 800, 4)
-            grey_img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)   # shape (600, 800)
+            grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)   # shape (600, 800)
             resized = cv2.resize(grey_img, (80, 60), interpolation= cv2.INTER_LINEAR)   # shape (60, 80)
+            
+            # ls = numpy.append(ls, resized)
             ls.append(resized)
 
             # Display the picture in grayscale
@@ -35,8 +38,11 @@ def getState(frames = 4):
             # Press "q" to quit
             if cv2.waitKey(25) & 0xFF == ord("q"):
                 cv2.destroyAllWindows()
-                # break
-
+                break
+            
+            cv2.imshow('Osu!AI_View', grey_img)
+    
+    # ls = ls.reshape((4, 60, 80))
     transposed = keras.ops.transpose(ls, [1, 2, 0]) # (60, 80, 4) <- (4, 60, 80)
     
     # ! START OF DEBUGGING AREA !
@@ -59,5 +65,3 @@ def getState(frames = 4):
     # ! START OF DEBUGGING AREA !
     
     return transposed
-
-getState()

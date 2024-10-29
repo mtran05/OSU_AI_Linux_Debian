@@ -231,10 +231,13 @@ class BeatmapParser():
             end_point = slidercalc.get_end_point(hit_object["curveType"], hit_object["pixelLength"],
                                                  hit_object["points"])
             if end_point and end_point[0] and end_point[1]:
-                hit_object["end_position"] = [
-                    round(end_point[0]),
-                    round(end_point[1])
-                ]
+                try:
+                    hit_object["end_position"] = [
+                        int(end_point[0]),
+                        int(end_point[1])
+                    ]
+                except ValueError:
+                    print(f"ERROR trying convert str to int (possible Catmull): {end_point[0]}, {end_point[1]}")
             else:
                 # If endPosition could not be calculated, approximate it by setting it to the last point
                 hit_object["end_position"] = hit_object["points"][len(hit_object["points"]) - 1]
