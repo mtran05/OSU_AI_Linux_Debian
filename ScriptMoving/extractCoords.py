@@ -4,7 +4,6 @@ sys.path.append("C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI\\Parser")
 import numpy as np
 from curve import Bezier
 from slidercalc import rotate, get_circum_circle
-from extractBeatmap import extractBeatmap
 
 # * --------------- *
 
@@ -120,37 +119,3 @@ def interpolate_point(p1, p2, percentage):
     y = y1 + percentage * (y2 - y1)
 
     return x, y
-
-# * --------------------------Test-------------------------- *
-# ! Key Error: Likely because of duplicate map's name folder?
-# import requests
-# import json
-# import time
-# import pyautogui
-# pyautogui.PAUSE = 0.01
-# pyautogui.FAILSAFE = False
-
-# res = requests.get('http://127.0.0.1:24050/json/v2')
-# response = json.loads(res.text)
-# df = extractBeatmap(response)
-
-# while True:
-#     res = requests.get('http://127.0.0.1:24050/json/v2')
-#     response = json.loads(res.text)
-
-#     liveTime = response["beatmap"]["time"]["live"]
-#     timeObject = response["beatmap"]["time"]
-    
-#     if liveTime > timeObject["lastObject"]:
-#         break
-    
-#     # * ------------- *
-    
-#     x, y = extractCoords(response, df)
-#     if (x == None or y == None):
-#         continue
-    
-#     scale = 5.0/4.0
-#     x = x * scale + 80
-#     y = y * scale + 70
-#     pyautogui.moveTo(x, y)

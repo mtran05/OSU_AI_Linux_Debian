@@ -46,7 +46,7 @@ def create_model():
 
     model = keras.Model(inputs=[x.input, inputB], outputs=z)
     model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=0.00025, clipnorm=1.0),   # ? May want to consider >> RMSProp << ?
+        optimizer=keras.optimizers.SGD(learning_rate=0.00025, clipnorm=1.0),
         loss=keras.losses.Huber(),
         metrics=[keras.metrics.MeanAbsoluteError()]
     )
@@ -63,7 +63,7 @@ bootNavigation()
 
 """------------------------"""
 
-numberOfGames = 2
+numberOfGames = 1
 
 for i in range(numberOfGames):
     res = requests.get('http://127.0.0.1:24050/json/v2')
