@@ -1,63 +1,64 @@
 import sys
 sys.path.append("C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI\\Parser")
 
+import time
 import numpy as np
 from curve import Bezier
 from slidercalc import rotate, get_circum_circle
 
 # * --------------- *
 
-def extractCoords(response, df):
-    timeObject = response["beatmap"]["time"]
-    hits = response["play"]["hits"]
+# TODO: Catch random error??
+def extractCoords(unixStartTime, df):
+    TimeDelta = time.time() * 1000 - unixStartTime
+    DelayEpsilon = 40   # ! At least 30ms, no more than 100ms
+    nextHitObject = df[(df["startTime"] > TimeDelta - DelayEpsilon) | ((df["object_name"] == "slider") & (TimeDelta < df["end_time"]))]
     
-    hitObject = 0
-    for x, y in hits.items():
-        if x == "geki":     # we don't care about `geki` onwards
-            break
-        hitObject += y
-
-    liveTime = timeObject["live"]
     x, y = [None, None]
     
-    if df.loc[hitObject, "startTime"] - liveTime > 300:     # * only care if within 300ms *
+    if nextHitObject.empty:
+        return x, y
+    hitObject = nextHitObject.iloc[0]
+
+    if (unixStartTime + hitObject["startTime"]) - time.time() * 1000 > 300:     # * only care if within 300ms *
         return x, y
     
     # * ----------------- *
     
-    if df.loc[hitObject, "object_name"] == "circle":
-        x, y = df.loc[hitObject, "position"]
+    if hitObject["object_name"] == "circle":
+        x, y = hitObject["position"]
         return x, y
     
-    elif df.loc[hitObject, "object_name"] == "slider":
-        repeatCount = int(df.loc[hitObject, "repeatCount"])
-        sliderPercent = (liveTime - df.loc[hitObject, "startTime"])/df.loc[hitObject, "duration"]
+    elif hitObject["object_name"] == "slider":
+        repeatCount = int(hitObject["repeatCount"])
+        sliderTimeDelta = time.time()*1000 - (hitObject["startTime"] + unixStartTime)
+        sliderPercent = (sliderTimeDelta)/hitObject["duration"]
         
         if sliderPercent < 0:
-            x, y = df.loc[hitObject, "position"]
+            x, y = hitObject["position"]
             return x, y
         
-        if df.loc[hitObject, "curveType"] == "bezier":
+        if hitObject["curveType"] == "bezier":
             
             for i in range(1, repeatCount + 1):
-                if ((liveTime - df.loc[hitObject, "startTime"]) <= (df.loc[hitObject, "duration"] / repeatCount) * i):
+                if sliderTimeDelta <= (hitObject["duration"] / repeatCount) * i:
                     progress = (sliderPercent - (i-1) / repeatCount) * repeatCount
                     if (i % 2 != 0):
-                        bz = Bezier(df.loc[hitObject, "points"])
+                        bz = Bezier(hitObject["points"])
                         x, y = bz.at(progress)
                         return x, y
                     else:
-                        bz = Bezier(df.loc[hitObject, "points"][::-1])  # ! Backwards
+                        bz = Bezier(hitObject["points"][::-1])  # ! Backwards
                         x, y = bz.at(progress) 
                         return x, y
         
-        elif df.loc[hitObject, "curveType"] == "pass-through":
+        elif hitObject["curveType"] == "pass-through":
             # ?? p1, p2, p3 = [*df.loc[hitObject, "points"][:2], df.loc[hitObject, "end_position"]]
-            p1, p2, p3 = df.loc[hitObject, "points"]
+            p1, p2, p3 = hitObject["points"]
             
             try:
                 cx, cy, radius = get_circum_circle(p1, p2, p3)
-                radians = df.loc[hitObject, "pixelLength"] / radius
+                radians = hitObject["pixelLength"] / radius
 
                 matrix = np.array([p1, p2, p3])
                 matrix = np.concatenate((matrix, [[1],[1],[1]]), axis=1)
@@ -69,7 +70,7 @@ def extractCoords(response, df):
                     sign = 1    # ! + radians if clockwise
 
                 for i in range(1, repeatCount + 1):
-                    if ((liveTime - df.loc[hitObject, "startTime"]) <= (df.loc[hitObject, "duration"] / repeatCount) * i):
+                    if sliderTimeDelta <= (hitObject["duration"] / repeatCount) * i:
                         progress = (sliderPercent - (i-1) / repeatCount) * repeatCount
                         if (i % 2 != 0):
                             x, y = rotate(cx, cy, p1[0], p1[1], sign * radians * progress)
@@ -80,7 +81,7 @@ def extractCoords(response, df):
 
             except ValueError:
                 for i in range(1, repeatCount + 1):
-                    if ((liveTime - df.loc[hitObject, "startTime"]) <= (df.loc[hitObject, "duration"] / repeatCount) * i):
+                    if sliderTimeDelta <= (hitObject["duration"] / repeatCount) * i:
                         progress = (sliderPercent - (i-1) / repeatCount) * repeatCount
                         if (i % 2 != 0):
                             x, y = interpolate_point(p1, p3, progress)
@@ -89,12 +90,12 @@ def extractCoords(response, df):
                             x, y = interpolate_point(p3, p1, progress)   # ! Backwards: swap p1 & p2
                             return x, y
 
-        elif df.loc[hitObject, "curveType"] == "linear":
+        elif hitObject["curveType"] == "linear":
             # ?? p1, p2 = [df.loc[hitObject, "position"], df.loc[hitObject, "end_position"]]
-            p1, p2 = df.loc[hitObject, "points"]
+            p1, p2 = hitObject["points"]
             
             for i in range(1, repeatCount + 1):
-                if ((liveTime - df.loc[hitObject, "startTime"]) <= (df.loc[hitObject, "duration"] / repeatCount) * i):
+                if sliderTimeDelta <= (hitObject["duration"] / repeatCount) * i:
                     progress = (sliderPercent - (i-1) / repeatCount) * repeatCount
                     if (i % 2 != 0):
                         x, y = interpolate_point(p1, p2, progress)
@@ -103,7 +104,7 @@ def extractCoords(response, df):
                         x, y = interpolate_point(p2, p1, progress)   # ! Backwards: swap p1 & p2
                         return x, y
     
-    elif df.loc[hitObject, "object_name"] == "spinner":
+    elif hitObject["object_name"] == "spinner":
         x, y = 256, 192
         return x, y
     

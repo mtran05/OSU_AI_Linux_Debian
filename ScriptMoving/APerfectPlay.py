@@ -3,6 +3,7 @@ import json
 import time
 import random
 import threading
+from getUnixTime import getUnixTime
 from extractCoords import extractCoords
 from extractBeatmap import extractBeatmap
 from humancursor import SystemCursor
@@ -18,27 +19,24 @@ def perfectPlay():
     response = json.loads(res.text)
     df = extractBeatmap(response)
 
-    cursor = SystemCursor()     # ! TEST
+    startTime = None
+    while startTime == None:
+        startTime = getUnixTime()
+        print(startTime)
+    
+    stopTime = startTime + response["beatmap"]["time"]["lastObject"]
 
     while True:
-        res = requests.get('http://127.0.0.1:24050/json/v2')
-        response = json.loads(res.text)
-
-        liveTime = response["beatmap"]["time"]["live"]
-        timeObject = response["beatmap"]["time"]
-
-        if liveTime > timeObject["lastObject"]:
+        if time.time() * 1000 > stopTime:
             break
-        
-        # * ------------- *
 
-        x, y = extractCoords(response, df)
+        x, y = extractCoords(startTime, df)
         if (x == None or y == None):
             continue
         
         scale = 5.0/4.0
-        x = int(x * scale) + 80
-        y = int(y * scale) + 70
+        x = x * scale + 80
+        y = y * scale + 70
         pyautogui.moveTo(x, y)
 
 # def randomMove():
@@ -65,4 +63,5 @@ def perfectPlay():
 #     print("Done!")
 
 # !
+time.sleep(1)
 perfectPlay()

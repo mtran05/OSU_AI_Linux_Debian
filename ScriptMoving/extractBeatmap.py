@@ -38,3 +38,24 @@ def extractBeatmap(response):
     # Load into DataFrame
     df = pd.DataFrame(parser.beatmap["hitObjects"])
     return df
+
+# * --------------------------Test-------------------------- *
+# import requests
+# import json
+# import time
+
+# res = requests.get('http://127.0.0.1:24050/json/v2')
+# response = json.loads(res.text)
+# df = extractBeatmap(response)
+# print(df.loc[:10, ["startTime", "position", "object_name", "repeatCount", "pixelLength", "curveType", "points", "duration", "end_time", "end_position"]])
+
+
+# while(True):
+#     res = requests.get('http://127.0.0.1:24050/json/v2')
+#     response = json.loads(res.text)
+    
+#     timeObject = response["beatmap"]["time"]
+#     liveTime = timeObject["live"]
+    
+#     print(liveTime)
+#     time.sleep(0.1)
