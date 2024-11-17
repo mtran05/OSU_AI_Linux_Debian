@@ -70,6 +70,11 @@ for i in range(numberOfGames):
     res = requests.get('http://127.0.0.1:24050/json/v2')
     response = json.loads(res.text)
     df = extractBeatmap(response)
+    
+    time.sleep(2)
+    pyautogui.moveTo(400, 420)  # skip cut-scene
+    time.sleep(0.5)
+    pyautogui.click()
 
     startTime = None
     while startTime == None:
@@ -105,10 +110,6 @@ for i in range(numberOfGames):
             epochs=1,
         )
         pyautogui.moveTo(x, y)  
-        
-        # TODO: Human-like mouse movement (randomly swing in a circle of a small radius?)
-        # TODO: Default to middle when receive `None`, can deal with spinners combined with above
-        # TODO: Multi-threading or subprocess?
         
         # ! TEST ONLY ! (Please disable the other)
         # newX, newY = model.predict([state, currentMousePos])[0]

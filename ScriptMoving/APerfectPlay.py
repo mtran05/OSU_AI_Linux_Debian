@@ -3,7 +3,7 @@ import json
 import time
 import random
 import threading
-from getUnixTime import getUnixTime
+from getUnixTime import getUnixTimeTest
 from extractCoords import extractCoords
 from extractBeatmap import extractBeatmap
 from humancursor import SystemCursor
@@ -21,7 +21,7 @@ def perfectPlay():
 
     startTime = None
     while startTime == None:
-        startTime = getUnixTime()
+        startTime = getUnixTimeTest()
         print(startTime)
     
     stopTime = startTime + response["beatmap"]["time"]["lastObject"]
