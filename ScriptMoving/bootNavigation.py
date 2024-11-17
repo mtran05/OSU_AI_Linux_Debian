@@ -9,14 +9,16 @@ import cv2
 
 # * Boot up run *
 def bootNavigation():
-    osu = subprocess.Popen(['C:\\Users\\qttra\\AppData\\Local\\osu!\\osu!.exe'])
+    osu = subprocess.Popen(['C:\\Users\\qttra\\AppData\\Local\\osulazer\\current\\osu!.exe'])
     tosu = subprocess.Popen(['C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI\\Tosu\\tosu.exe'])
     time.sleep(12)
 
     AllWindows = pyautogui.getAllWindows()
     osuWindow = [AllWindows[i] for i in range(len(AllWindows)) if AllWindows[i].title == "osu!"][0]
     osuWindow.activate()
-    osuWindow.moveTo(-3, -37)           # Move OSU! to top left & Get rid of top navigation (margin on the left too)
+    
+    osuWindow.resize(822 - osuWindow.width, 656 - osuWindow.height)
+    osuWindow.moveTo(-13, -47)          # Move OSU! to top left & Get rid of top navigation (margin on the left too)
     max_x, max_y = osuWindow.size       # Osu sub-screen 800x600
     max_x, max_y = [max_x - 6, max_y - 40]      # ! extra -3 to also disregard margin on reminding sides
     time.sleep(0.5)
@@ -33,33 +35,32 @@ def bootNavigation():
     time.sleep(0.5)
     # * Osu AI view frame code
 
-    pyautogui.click(max_x/2, max_y/2)   # Click the big OSU! icon in the middle
+    pyautogui.moveTo(max_x/2, max_y/2)
     time.sleep(0.5)
-
-    x, y = pyautogui.locateCenterOnScreen('../Images/PlayHorizontal.png', grayscale=True, confidence=0.8)
-    pyautogui.click(x, y)
-    time.sleep(0.5)
-
-    x, y = pyautogui.locateCenterOnScreen('../Images/Solo.png', grayscale=True, confidence=0.8)
-    pyautogui.click(x, y)
+    pyautogui.click()   # Click the big OSU! icon in the middle
+    time.sleep(1)
+    pyautogui.click()   # Click the Play icon in the middle
+    time.sleep(1)
+    pyautogui.click()   # Click the Solo icon in the middle
     time.sleep(1)
 
-    pyautogui.click(x, y)     # Click the OsuAI collection
+    pyautogui.moveTo(270, 580)
     time.sleep(0.5)
-
-    x, y = pyautogui.locateCenterOnScreen('../Images/Shuffle.png', grayscale=True, confidence=0.8)
-    pyautogui.click(x, y)
-    time.sleep(0.5)
-
-    pyautogui.click(x-50, y)       # Mode list
-    time.sleep(0.5)
-    pyautogui.click(x, y-220)      # Choose mode  # ! RELAX
-    time.sleep(0.5)
-
-    x, y = pyautogui.locateCenterOnScreen('../Images/Close.png', grayscale=True, confidence=0.8)
-    pyautogui.click(x, y)   # Close mode list
+    pyautogui.click()           # Shuffle
     time.sleep(1)
 
-    pyautogui.click(max_x, max_y)
-    time.sleep(2)
-    pyautogui.click()   # skip cut-scene
+    pyautogui.click(200, 580)   # Open Mode list
+    time.sleep(1)
+    pyautogui.moveTo(200, 200)
+    time.sleep(0.5)
+    pyautogui.click()   # Pre-set Modes for Moving
+    time.sleep(1)
+
+    pyautogui.moveTo(100, 570)  # Close mode list
+    time.sleep(0.5)
+    pyautogui.click()
+    time.sleep(1)
+
+    pyautogui.moveTo(790, 590)
+    time.sleep(0.5)
+    pyautogui.click()

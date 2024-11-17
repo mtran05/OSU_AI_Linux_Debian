@@ -18,6 +18,7 @@ pyautogui.PAUSE = 0.001
 
 from songSelect import chooseSong
 from screenshot import getState
+from getUnixTime import getUnixTime
 from extractCoords import extractCoords
 from extractBeatmap import extractBeatmap
 from bootNavigation import bootNavigation
@@ -63,29 +64,28 @@ bootNavigation()
 
 """------------------------"""
 
-numberOfGames = 1
+numberOfGames = 2
 
 for i in range(numberOfGames):
     res = requests.get('http://127.0.0.1:24050/json/v2')
     response = json.loads(res.text)
     df = extractBeatmap(response)
 
+    startTime = None
+    while startTime == None:
+        startTime = getUnixTime()
+        print(startTime)
+    
+    stopTime = startTime + response["beatmap"]["time"]["lastObject"]
+
     while True:
-        res = requests.get('http://127.0.0.1:24050/json/v2')
-        response = json.loads(res.text)
-
-        liveTime = response["beatmap"]["time"]["live"]
-        timeObject = response["beatmap"]["time"]
-
-        if liveTime > timeObject["lastObject"]:
+        if time.time() * 1000 > stopTime:
             break
-        
-        # * ------------- *
 
         state = getState()
         state = keras.ops.expand_dims(state, 0)
         
-        x, y = extractCoords(response, df)
+        x, y = extractCoords(startTime, df)
         if (x == None or y == None):
             continue
         

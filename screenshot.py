@@ -40,7 +40,8 @@ def getState(frames = 4):
                 cv2.destroyAllWindows()
                 break
             
-            cv2.imshow('Osu!AI_View', cv2.resize(resized, (800, 600)))
+            cv2.imshow('Osu!AI_View', grey_img)
+            # cv2.imshow('Osu!AI_View', cv2.resize(resized, (800, 600)))
     
     # ls = ls.reshape((4, 60, 80))
     transposed = keras.ops.transpose(ls, [1, 2, 0]) # (60, 80, 4) <- (4, 60, 80)
