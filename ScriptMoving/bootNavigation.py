@@ -2,15 +2,20 @@ import subprocess
 import time
 import pyautogui
 import numpy as np
+import os
+import json
 from PIL import ImageGrab
 import cv2
+import os
 
 """------------------------------------------------------------------------------------------------------"""
+with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
+    pathToOsuExe = json.load(config)["system"]["pathToOsuExe"]
 
 # * Boot up run *
 def bootNavigation():
-    osu = subprocess.Popen(['C:\\Users\\qttra\\AppData\\Local\\osulazer\\current\\osu!.exe'])
-    tosu = subprocess.Popen(['C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI\\Tosu\\tosu.exe'])
+    osu = subprocess.Popen([pathToOsuExe])
+    tosu = subprocess.Popen([os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Tosu\\tosu.exe")])
     time.sleep(12)
 
     AllWindows = pyautogui.getAllWindows()

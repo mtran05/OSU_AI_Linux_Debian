@@ -3,10 +3,11 @@ import json
 import time
 import random
 import threading
+import subprocess
+import os
 from getUnixTime import getUnixTimeTest
 from extractCoords import extractCoords
 from extractBeatmap import extractBeatmap
-from humancursor import SystemCursor
 import pyautogui
 pyautogui.PAUSE = 0.01
 pyautogui.FAILSAFE = False
@@ -63,5 +64,6 @@ def perfectPlay():
 #     print("Done!")
 
 # !
+tosu = subprocess.Popen([os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Tosu\\tosu.exe")])
 time.sleep(1)
 perfectPlay()

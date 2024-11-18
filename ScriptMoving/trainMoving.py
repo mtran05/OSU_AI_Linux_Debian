@@ -2,7 +2,7 @@ import os
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
 import sys
-sys.path.append("C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import keras
 from keras import layers
