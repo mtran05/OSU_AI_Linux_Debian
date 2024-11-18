@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append("C:\\Users\\qttra\\OneDrive\\Documents\\GitHub\\OSU_AI\\Parser")
 
+import re
 import datetime
 import pandas as pd
 import beatmapparser
@@ -15,11 +16,41 @@ def extractBeatmap(response):
 
     # song dir
     maps = os.listdir(osu_songs_directory)
-    selectedMapFolder = [x for x in maps if beatmap["title"] in x]
+    tokensTitle = response["beatmap"]["title"].split()
+    
+    # mass select map folders
+    selectedMapFolder = []
+    for map in maps:
+        for token in tokensTitle:
+            if token in map:
+                selectedMapFolder.append(map)
+                break
+    # print(selectedMapFolder)
 
     # get osu path
-    osuMap = f"{beatmap["artist"]} - {beatmap["title"]} ({beatmap["mapper"]}) [{beatmap["version"]}].osu"
-    osu_path = os.path.join(osu_songs_directory, selectedMapFolder[0], osuMap)
+    # osuMap = f"{beatmap["artist"]} - {beatmap["title"]} ({beatmap["mapper"]}) [{beatmap["version"]}].osu"
+    osu_path = None
+    for folder in selectedMapFolder:
+        # print(folder)
+        songsFound = os.listdir(os.path.join(osu_songs_directory, folder))
+        songs = [songFile for songFile in songsFound if re.match(r'.*\.osu$', songFile)
+                and (re.sub(r'\?', '', f"[{beatmap["version"]}].osu").lower() in songFile.lower())
+                and beatmap["artist"].split(":")[0].lower() in songFile.lower() 
+                and beatmap["mapper"].lower() in songFile.lower()]
+        
+        if not songs:
+            songs = [songFile for songFile in songsFound if re.match(r'.*\.osu$', songFile)
+                and re.sub(r'[^a-zA-Z0-9\s\'\"()!]', '', beatmap["version"]).lower() in songFile.lower() 
+                and beatmap["artist"].split(":")[0].lower() in songFile.lower() 
+                and beatmap["mapper"].lower() in songFile.lower()]
+            if not songs:
+                continue
+        
+        song = songs[0]
+        
+        if os.path.isfile(os.path.join(osu_songs_directory, folder, song)):
+            osu_path = os.path.join(osu_songs_directory, folder, song)
+            break
     print(osu_path)
 
     # init parser
@@ -53,9 +84,5 @@ def extractBeatmap(response):
 # while(True):
 #     res = requests.get('http://127.0.0.1:24050/json/v2')
 #     response = json.loads(res.text)
-    
-#     timeObject = response["beatmap"]["time"]
-#     liveTime = timeObject["live"]
-    
-#     print(liveTime)
-#     time.sleep(0.1)
+#     df = extractBeatmap(response)
+#     time.sleep(5)
