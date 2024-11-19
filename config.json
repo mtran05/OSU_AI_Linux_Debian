@@ -1,7 +1,15 @@
 {
     "system": {
-        "pathToOsuExe": "C:\\Users\\qttra\\AppData\\Local\\osulazer\\current\\osu!.exe",
+        "pathToOsuExe": "~/Downloads/osu.AppImage",
         "pathToOsuSongs": "/home/mason/Documents/home/mason/Documents/osu!/Songs"
+    },
+
+    "osuConfig": {
+        "Width": 800,
+        "Height": 600,
+        "XOffSet": 70,
+        "YOffSet": 40,
+        "YOffSetMargin": 40
     },
 
     "clicking": {

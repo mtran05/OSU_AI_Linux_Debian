@@ -62,9 +62,17 @@ else:
 # Open Tosu and OSU! after loading model, so we can start training right away without waiting model to load
 bootNavigation()
 
+# Load config
+with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
+    configDict = json.load(config)
+    xOffSet = configDict["osuConfig"]["XOffSet"]
+    yOffSet = configDict["osuConfig"]["YOffSet"]
+    yOffSetMargin = configDict["osuConfig"]["YOffSetMargin"]
+    yOffTotal = yOffSet + yOffSetMargin
+
 """------------------------"""
 
-numberOfGames = 2
+numberOfGames = 1
 
 for i in range(numberOfGames):
     res = requests.get('http://127.0.0.1:24050/json/v2')
@@ -96,8 +104,8 @@ for i in range(numberOfGames):
         
         # Convert from Osu! Pixels to actual Screen Pixels
         scale = 5.0/4.0
-        x = x * scale + 80
-        y = y * scale + 70
+        x = (x * scale + 80) + xOffSet
+        y = (y * scale + 70) + yOffTotal
         
         currentMousePos = pyautogui.position()
         currentMousePos = keras.ops.expand_dims(currentMousePos, 0)

@@ -10,37 +10,39 @@ import os
 
 """------------------------------------------------------------------------------------------------------"""
 with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
-    pathToOsuExe = json.load(config)["system"]["pathToOsuExe"]
+    configDict = json.load(config)
+    pathToOsuExe = configDict["system"]["pathToOsuExe"]
+    Width = configDict["osuConfig"]["Width"]
+    Height = configDict["osuConfig"]["Height"]
+    xOffSet = configDict["osuConfig"]["XOffSet"]
+    yOffSet = configDict["osuConfig"]["YOffSet"]
+    yOffSetMargin = configDict["osuConfig"]["YOffSetMargin"]
+    yOffTotal = yOffSet + yOffSetMargin
 
 # * Boot up run *
 def bootNavigation():
-    osu = subprocess.Popen([pathToOsuExe])
-    tosu = subprocess.Popen([os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Tosu\\tosu.exe")])
-    time.sleep(12)
+    # subprocess.Popen("sudo " + os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Tosu/tosu"), shell=True)
+    # subprocess.Popen(f"sudo {pathToOsuExe}", shell=True)
+    # time.sleep(15)
 
-    AllWindows = pyautogui.getAllWindows()
-    osuWindow = [AllWindows[i] for i in range(len(AllWindows)) if AllWindows[i].title == "osu!"][0]
-    osuWindow.activate()
-    
-    osuWindow.resize(822 - osuWindow.width, 656 - osuWindow.height)
-    osuWindow.moveTo(-13, -47)          # Move OSU! to top left & Get rid of top navigation (margin on the left too)
-    max_x, max_y = osuWindow.size       # Osu sub-screen 800x600
-    max_x, max_y = [max_x - 6, max_y - 40]      # ! extra -3 to also disregard margin on reminding sides
-    time.sleep(0.5)
+    osuID = subprocess.check_output("xdotool search --onlyvisible --name osu!", shell=True, text=True).strip()
+    subprocess.run(f"xdotool windowactivate {osuID}", shell=True)
+    subprocess.run(f"xdotool windowsize {osuID} {Width} {Height}", shell=True)
+    subprocess.run(f"xdotool windowmove {osuID} {xOffSet} {yOffSet}", shell=True)
 
     # * Osu AI view frame code
-    Screen = np.array(ImageGrab.grab(bbox=(0, 0, 800, 600)))
+    Screen = np.array(ImageGrab.grab(bbox=(xOffSet, yOffTotal, Width + xOffSet, Height + yOffTotal), xdisplay=":0"))
     gray = cv2.cvtColor(Screen, cv2.COLOR_BGR2GRAY)
     cv2.imshow('Osu!AI_View', gray)
     time.sleep(0.5)
     
-    AllWindows = pyautogui.getAllWindows()
-    GrayScaledView = [AllWindows[i] for i in range(len(AllWindows)) if AllWindows[i].title == "Osu!AI_View"][0]
-    GrayScaledView.moveTo(0, 700)
+    osuAI_ID = subprocess.check_output("xdotool search --onlyvisible --name Osu!AI_View", shell=True, text=True).strip()
+    subprocess.run(f"xdotool windowmove {osuAI_ID} {xOffSet} {Height + 200}", shell=True)
     time.sleep(0.5)
     # * Osu AI view frame code
 
-    pyautogui.moveTo(max_x/2, max_y/2)
+    subprocess.run(f"xdotool windowactivate {osuID}", shell=True)
+    pyautogui.moveTo(Width/2 + xOffSet, Height/2 + yOffTotal)
     time.sleep(0.5)
     pyautogui.click()   # Click the big OSU! icon in the middle
     time.sleep(1)
@@ -49,23 +51,25 @@ def bootNavigation():
     pyautogui.click()   # Click the Solo icon in the middle
     time.sleep(1)
 
-    pyautogui.moveTo(270, 580)
+    pyautogui.moveTo(270 + xOffSet, 580 + yOffTotal)
     time.sleep(0.5)
     pyautogui.click()           # Shuffle
     time.sleep(1)
 
-    pyautogui.click(200, 580)   # Open Mode list
+    pyautogui.moveTo(200 + xOffSet, 580 + yOffTotal)
+    time.sleep(0.5)
+    pyautogui.click()   # Open Mode list
     time.sleep(1)
-    pyautogui.moveTo(200, 200)
+    pyautogui.moveTo(200 + xOffSet, 200 + yOffTotal)
     time.sleep(0.5)
     pyautogui.click()   # Pre-set Modes for Moving
     time.sleep(1)
 
-    pyautogui.moveTo(100, 570)  # Close mode list
+    pyautogui.moveTo(100 + xOffSet, 570 + yOffTotal)  # Close mode list
     time.sleep(0.5)
     pyautogui.click()
     time.sleep(1)
 
-    pyautogui.moveTo(790, 590)
+    pyautogui.moveTo(780 + xOffSet, 580 + yOffTotal)
     time.sleep(0.5)
     pyautogui.click()

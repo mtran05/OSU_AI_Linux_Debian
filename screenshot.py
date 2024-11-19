@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 # Possible values: 20, 25, 30, 35, 40, 50, 60
 fps = 40
 
-def getState(frames = 4):
+def getState(frames = 4, top = 80, left = 70, width = 800, height = 600):
     # ls = numpy.array([])
     ls = []
 
     with mss.mss() as sct:
         # Part of the screen to capture
-        monitor = {"top": 0, "left": 0, "width": 800, "height": 600}
+        monitor = {"top": top, "left": left, "width": width, "height": height}
 
         # if "Screen capturing":
         for i in range(frames):
