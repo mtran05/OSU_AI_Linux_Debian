@@ -4,11 +4,24 @@ import time
 import mss
 import keras
 import matplotlib.pyplot as plt
+import os
+import json
+
+# Load Config
+with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
+    configDict = json.load(config)
+    pathToOsuExe = configDict["system"]["pathToOsuExe"]
+    Width = configDict["osuConfig"]["Width"]
+    Height = configDict["osuConfig"]["Height"]
+    xOffSet = configDict["osuConfig"]["XOffSet"]
+    yOffSet = configDict["osuConfig"]["YOffSet"]
+    yOffSetMargin = configDict["osuConfig"]["YOffSetMargin"]
+    yOffTotal = yOffSet + yOffSetMargin
 
 # Possible values: 20, 25, 30, 35, 40, 50, 60
 fps = 40
 
-def getState(frames = 4, top = 80, left = 70, width = 800, height = 600):
+def getState(frames = 4, top = yOffTotal, left = xOffSet, width = Width, height = Height):
     # ls = numpy.array([])
     ls = []
 

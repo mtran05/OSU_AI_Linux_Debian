@@ -1,9 +1,6 @@
 import requests
 import json
 import time
-import random
-import threading
-import subprocess
 import os
 from getUnixTime import getUnixTimeTest
 from extractCoords import extractCoords
