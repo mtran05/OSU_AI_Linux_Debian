@@ -40,7 +40,7 @@ def getState(frames = 4, top = 80, left = 70, width = 800, height = 600):
                 cv2.destroyAllWindows()
                 break
             
-            cv2.imshow('Osu!AI_View', grey_img)
+            cv2.imshow('Osu!AI_View', cv2.resize(grey_img, (80*5, 60*5)))
             # cv2.imshow('Osu!AI_View', cv2.resize(resized, (800, 600)))
     
     # ls = ls.reshape((4, 60, 80))

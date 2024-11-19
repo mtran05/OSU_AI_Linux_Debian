@@ -79,8 +79,8 @@ for i in range(numberOfGames):
     response = json.loads(res.text)
     df = extractBeatmap(response)
     
-    time.sleep(2)
-    pyautogui.moveTo(400, 420)  # skip cut-scene
+    time.sleep(3)
+    pyautogui.moveTo(400 + xOffSet, 420 + yOffTotal)  # skip cut-scene
     time.sleep(0.5)
     pyautogui.click()
 

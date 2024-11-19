@@ -7,6 +7,9 @@ import json
 from PIL import ImageGrab
 import cv2
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+from screenshot import getState
 
 """------------------------------------------------------------------------------------------------------"""
 with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
@@ -36,11 +39,16 @@ def bootNavigation():
     cv2.imshow('Osu!AI_View', gray)
     time.sleep(0.5)
     
-    osuAI_ID = subprocess.check_output("xdotool search --onlyvisible --name Osu!AI_View", shell=True, text=True).strip()
-    subprocess.run(f"xdotool windowmove {osuAI_ID} {xOffSet} {Height + 200}", shell=True)
+    # Linux Compatible Piece of Code
+    getState()
     time.sleep(0.5)
+    
     # * Osu AI view frame code
+    osuAI_ID = subprocess.check_output("xdotool search --onlyvisible --name Osu!AI_View", shell=True, text=True).strip()
+    subprocess.run(f"xdotool windowmove {osuAI_ID} {xOffSet} {Height + 600}", shell=True)
+    time.sleep(0.5)
 
+    # Other Operations
     subprocess.run(f"xdotool windowactivate {osuID}", shell=True)
     pyautogui.moveTo(Width/2 + xOffSet, Height/2 + yOffTotal)
     time.sleep(0.5)
