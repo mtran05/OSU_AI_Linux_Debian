@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Parser"))
 
+import json
 import re
 import datetime
 import pandas as pd
@@ -9,9 +10,12 @@ import beatmapparser
 
 # * ------------- *
 
+with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
+    osu_songs_directory = json.load(config)["system"]["pathToOsuSongs"]
+
 def extractBeatmap(response):
     # get Songs folder
-    osu_songs_directory = os.path.join(os.getenv('LOCALAPPDATA'), 'osu!', 'Songs')
+    # osu_songs_directory = os.path.join(os.getenv('LOCALAPPDATA'), 'osu!', 'Songs')
     beatmap = response["beatmap"]
 
     # song dir
@@ -34,7 +38,7 @@ def extractBeatmap(response):
         # print(folder)
         songsFound = os.listdir(os.path.join(osu_songs_directory, folder))
         songs = [songFile for songFile in songsFound if re.match(r'.*\.osu$', songFile)
-                and (re.sub(r'\?', '', f"[{beatmap["version"]}].osu").lower() in songFile.lower())
+                and (re.sub(r'\?', '', f"[{beatmap['version']}].osu").lower() in songFile.lower())
                 and beatmap["artist"].split(":")[0].lower() in songFile.lower() 
                 and beatmap["mapper"].lower() in songFile.lower()]
         

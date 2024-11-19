@@ -1,6 +1,7 @@
 {
     "system": {
-        "pathToOsuExe": "C:\\Users\\qttra\\AppData\\Local\\osulazer\\current\\osu!.exe"
+        "pathToOsuExe": "C:\\Users\\qttra\\AppData\\Local\\osulazer\\current\\osu!.exe",
+        "pathToOsuSongs": "/home/mason/Documents/home/mason/Documents/osu!/Songs"
     },
 
     "clicking": {
