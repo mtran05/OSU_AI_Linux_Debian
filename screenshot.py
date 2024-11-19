@@ -8,7 +8,7 @@ import os
 import json
 
 # Load Config
-with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.json")) as config:
     configDict = json.load(config)
     pathToOsuExe = configDict["system"]["pathToOsuExe"]
     Width = configDict["osuConfig"]["Width"]

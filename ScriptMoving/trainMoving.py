@@ -74,7 +74,7 @@ with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__
 
 numberOfGames = 1
 
-for i in range(numberOfGames):
+for i in range(1, numberOfGames + 1):
     res = requests.get('http://127.0.0.1:24050/json/v2')
     response = json.loads(res.text)
     df = extractBeatmap(response)
@@ -98,34 +98,39 @@ for i in range(numberOfGames):
         state = getState()
         state = keras.ops.expand_dims(state, 0)
         
-        x, y = extractCoords(startTime, df)
-        if (x == None or y == None):
-            continue
-        
-        # Convert from Osu! Pixels to actual Screen Pixels
-        scale = 5.0/4.0
-        x = (x * scale + 80) + xOffSet
-        y = (y * scale + 70) + yOffTotal
-        
-        currentMousePos = pyautogui.position()
-        currentMousePos = keras.ops.expand_dims(currentMousePos, 0)
-        hitObjectPosition = keras.ops.expand_dims([x, y], 0)
-        
-        # ! TRAIN ONLY ! (Please disable the other)
-        history = model.fit(
-            x=[state, currentMousePos],
-            y=hitObjectPosition,
-            epochs=1,
-        )
-        pyautogui.moveTo(x, y)  
-        
-        # ! TEST ONLY ! (Please disable the other)
-        # newX, newY = model.predict([state, currentMousePos])[0]
-        # print(newX, newY)
-        # pyautogui.moveTo(newX, newY)
+        # Test for every n-10th beatmap
+        if (i % 10 != 0):
+            # ! TRAIN ONLY !
+            x, y = extractCoords(startTime, df)
+            if (x == None or y == None):
+                continue
+            
+            # Convert from Osu! Pixels to actual Screen Pixels
+            scale = 5.0/4.0
+            x = (x * scale + 80) + xOffSet
+            y = (y * scale + 70) + yOffTotal
+
+            currentMousePos = pyautogui.position()
+            currentMousePos = keras.ops.expand_dims(currentMousePos, 0)
+            hitObjectPosition = keras.ops.expand_dims([x, y], 0)
+
+            history = model.fit(
+                x=[state, currentMousePos],
+                y=hitObjectPosition,
+                epochs=1,
+            )
+            pyautogui.moveTo(x, y)  
+        else:
+            # ! TEST ONLY !
+            currentMousePos = pyautogui.position()
+            currentMousePos = keras.ops.expand_dims(currentMousePos, 0)
+
+            newX, newY = model.predict([state, currentMousePos])[0]
+            print(newX, newY)
+            pyautogui.moveTo(newX, newY)
     
     # Choose a new song upon finishing one
-    if i == numberOfGames - 1:
+    if i == numberOfGames:
         break
     else:
         chooseSong()
