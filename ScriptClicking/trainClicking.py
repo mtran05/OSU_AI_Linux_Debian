@@ -71,6 +71,7 @@ else:
 """------------------------"""
 
 # ? May want to consider >> RMSProp << ?
+# LR Scheduler
 optimizer = keras.optimizers.Adam(learning_rate=0.00025, clipnorm=1.0)
 
 # Experience replay buffers for clicking (action = 0)

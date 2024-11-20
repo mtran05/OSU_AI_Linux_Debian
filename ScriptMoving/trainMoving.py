@@ -107,10 +107,10 @@ for i in range(1, numberOfGames + 1):
             
             # Convert from Osu! Pixels to actual Screen Pixels
             scale = 5.0/4.0
-            x = (x * scale + 80) + xOffSet
-            y = (y * scale + 70) + yOffTotal
+            x = x * scale + 80
+            y = y * scale + 70
 
-            currentMousePos = pyautogui.position()
+            currentMousePos = np.array(pyautogui.position()) - np.array([xOffSet, yOffTotal])
             currentMousePos = keras.ops.expand_dims(currentMousePos, 0)
             hitObjectPosition = keras.ops.expand_dims([x, y], 0)
 
@@ -119,13 +119,22 @@ for i in range(1, numberOfGames + 1):
                 y=hitObjectPosition,
                 epochs=1,
             )
+            
+            # Accounting for offsets
+            x += xOffSet
+            y += yOffTotal
             pyautogui.moveTo(x, y)  
+            
         else:
             # ! TEST ONLY !
-            currentMousePos = pyautogui.position()
+            currentMousePos = np.array(pyautogui.position()) - np.array([xOffSet, yOffTotal])
             currentMousePos = keras.ops.expand_dims(currentMousePos, 0)
 
             newX, newY = model.predict([state, currentMousePos])[0]
+            
+            # Accounting for offsets
+            newX += xOffSet
+            newY += yOffTotal
             print(newX, newY)
             pyautogui.moveTo(newX, newY)
     

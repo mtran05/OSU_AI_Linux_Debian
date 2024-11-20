@@ -39,7 +39,7 @@ def bootNavigation():
     subprocess.run(f"xdotool windowmove {osuID} {xOffSet} {yOffSet}", shell=True)
 
     # * Osu AI view frame code
-    Screen = np.array(ImageGrab.grab(bbox=(xOffSet, yOffTotal, Width + xOffSet, Height + yOffTotal), xdisplay=":0"))
+    Screen = np.array(ImageGrab.grab(bbox=(xOffSet, yOffTotal, Width + xOffSet, Height + yOffTotal), xdisplay=":1"))
     gray = cv2.cvtColor(Screen, cv2.COLOR_BGR2GRAY)
     cv2.imshow('Osu!AI_View', gray)
     time.sleep(0.5)
