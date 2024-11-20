@@ -74,8 +74,6 @@ with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__
 
 """------------------------"""
 
-numberOfGames = 2
-
 for i in range(1, numberOfGames + 1):
     res = requests.get('http://127.0.0.1:24050/json/v2')
     response = json.loads(res.text)
