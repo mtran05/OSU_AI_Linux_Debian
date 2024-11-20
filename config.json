@@ -9,7 +9,11 @@
         "Height": 600,
         "XOffSet": 70,
         "YOffSet": 40,
-        "YOffSetMargin": 40
+        "YOffSetMargin": 40,
+
+        "numberOfGames": 2,
+        "randomStart": 1,
+        "randomEnd": 10
     },
 
     "clicking": {

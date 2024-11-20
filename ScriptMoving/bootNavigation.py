@@ -10,11 +10,16 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from screenshot import getState
+import random
 
 """------------------------------------------------------------------------------------------------------"""
 with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
     configDict = json.load(config)
+    
     pathToOsuExe = configDict["system"]["pathToOsuExe"]
+    randomStart = configDict["osuConfig"]["randomStart"]
+    randomEnd = configDict["osuConfig"]["randomEnd"]
+    
     Width = configDict["osuConfig"]["Width"]
     Height = configDict["osuConfig"]["Height"]
     xOffSet = configDict["osuConfig"]["XOffSet"]
@@ -59,9 +64,8 @@ def bootNavigation():
     pyautogui.click()   # Click the Solo icon in the middle
     time.sleep(1)
 
-    pyautogui.moveTo(270 + xOffSet, 580 + yOffTotal)
-    time.sleep(0.5)
-    pyautogui.click()           # Shuffle
+    for i in range(random.randint(randomStart, randomEnd)):
+        pyautogui.press('down')
     time.sleep(1)
 
     pyautogui.moveTo(200 + xOffSet, 580 + yOffTotal)

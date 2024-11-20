@@ -65,6 +65,8 @@ bootNavigation()
 # Load config
 with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json")) as config:
     configDict = json.load(config)
+    numberOfGames = configDict["osuConfig"]["numberOfGames"]
+    
     xOffSet = configDict["osuConfig"]["XOffSet"]
     yOffSet = configDict["osuConfig"]["YOffSet"]
     yOffSetMargin = configDict["osuConfig"]["YOffSetMargin"]
@@ -72,7 +74,7 @@ with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__
 
 """------------------------"""
 
-numberOfGames = 1
+numberOfGames = 2
 
 for i in range(1, numberOfGames + 1):
     res = requests.get('http://127.0.0.1:24050/json/v2')
