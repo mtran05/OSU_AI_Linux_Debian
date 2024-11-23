@@ -42,7 +42,10 @@ def perfectPlay():
         scale = 5.0/4.0
         x = (x * scale + 80) + xOffSet
         y = (y * scale + 70) + yOffTotal
-        pyautogui.moveTo(x, y)
+        
+        currentX, currentY = pyautogui.position()
+        
+        pyautogui.moveRel(x - currentX, y - currentY)
 
 # def randomMove():
 #     res = requests.get('http://127.0.0.1:24050/json/v2')
